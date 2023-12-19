@@ -60,7 +60,7 @@ const submit = async () => {
 	} catch {
 		$event('show-alert', {
 			type: 'error',
-			text: 'E-mail ou senha inválidos'
+			text: signinContent.SIGNIN_ERROR_MESSAGE
 		})
 	} finally {
 		signinLoader.value = false
