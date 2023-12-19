@@ -24,5 +24,10 @@ export default defineNuxtConfig({
 			},
 		},
 	},
-	css: ['~/assets/main.scss']
+	css: ['~/assets/main.scss'],
+	runtimeConfig: {
+		public: {
+			API_HOST_ADDRESS: process.env.API_HOST_ADDRESS
+		}
+	}
 })
