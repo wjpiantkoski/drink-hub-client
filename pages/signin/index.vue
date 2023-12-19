@@ -1,11 +1,5 @@
-<script lang="ts">
+<script setup lang="ts">
 import signinContent from "~/utils/content/signin.content";
-
-export default {
-	data: () => ({
-		signinContent
-	})
-}
 </script>
 
 <template>

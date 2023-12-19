@@ -1,59 +1,66 @@
-<script lang="ts">
+<script lang="ts" setup>
 import signinContent from "~/utils/content/signin.content";
 import {requiredValidation} from "~/utils/validations/required.validation";
 import {emailValidation} from "~/utils/validations/email.validation";
 import type {UserSignin} from "~/domain/user/entities/user-signin.entity";
 import UserRepository from "~/infra/repository/users/user.repository";
+import type {UserToken} from "~/domain/user/entities/user-token.entity";
 import type {User} from "~/domain/user/entities/user.entity";
-import type { UserToken } from "~/domain/user/entities/user-token.entity";
+import {use} from "h3";
 
-export default {
-	data: () => ({
-		signinContent,
-		rules: {
-			email: [
-				requiredValidation,
-				emailValidation
-			],
-			password: [
-				requiredValidation
-			]
-		},
-		submitLoader: false,
-		email: null,
-		password: null,
-	}),
-	methods: {
-		async submit(): Promise<void> {
-			try {
-				const {valid} = await this.$refs.signinForm.validate()
+const rules = {
+	email: [
+		requiredValidation,
+		emailValidation
+	],
+	password: [
+		requiredValidation
+	]
+}
 
-				if (valid) {
-					this.$data.submitLoader = true
 
-					const userSignin: UserSignin = {
-						password: this.$data.password.trim(),
-						email: this.$data.email.trim().toLowerCase()
-					}
+const signinLoader = ref(false)
+const signinForm = ref(null)
 
-					const userRepository = new UserRepository()
-					const data: UserToken = await userRepository.signin(userSignin)
+const signinData = reactive({
+	email: '',
+	password: ''
+})
 
-					await this.resetForm()
+const resetForm = async () => {
+	signinData.email = ''
+	signinData.password = ''
+
+	if (signinForm.value) {
+		await signinForm.value.reset()
+	}
+}
+
+const submit = async () => {
+	try {
+		if (signinForm.value) {
+			const {valid} = await signinForm.value.validate()
+
+			if (valid) {
+				signinLoader.value = true
+
+				const userSignin: UserSignin = {
+					password: signinData.password,
+					email: signinData.email.trim().toLowerCase()
 				}
-			} catch (err) {
-				if (process.env.NODE_ENV !== 'product') {
-					console.error(err)
-				}
-			} finally {
-				this.$data.submitLoader = false
+
+				const userRepository = new UserRepository()
+				const userToken: UserToken = await userRepository.signin(userSignin)
+
+				console.log({userToken})
+
+				await resetForm()
 			}
-		},
-		async resetForm(): Promise<void> {
-			this.$data.email = null
-			this.$data.password = null
-			await this.$refs.signinForm.reset()
 		}
+	} catch {
+		//todo alert de credenciais inválidas
+	} finally {
+		signinLoader.value = false
 	}
 }
 </script>
@@ -65,7 +72,7 @@ export default {
 				type="email"
 				label="E-mail"
 				:rules="rules.email"
-				v-model="email"
+				v-model="signinData.email"
 			></v-text-field>
 		</div>
 
@@ -74,7 +81,7 @@ export default {
 				type="password"
 				label="Senha"
 				:rules="rules.password"
-				v-model="password"
+				v-model="signinData.password"
 			></v-text-field>
 		</div>
 
@@ -82,7 +89,7 @@ export default {
 			<v-btn
 				type="submit"
 				color="success"
-				:loading="submitLoader"
+				:loading="signinLoader"
 			>
 				{{ signinContent.SIGNIN_FORM_SUBMIT_BUTTON }}
 			</v-btn>
