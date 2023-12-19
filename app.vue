@@ -1,12 +1,8 @@
-<script lang="ts">
-import {requiredValidation} from "~/utils/validations/required.validation";
+<script lang="ts" setup>
 import Alert from "~/components/@shared/Alert.vue";
-export default {
-	components: {Alert},
-  data: () => ({
-    requiredValidation
-  })
-}
+import {useUserStore} from "~/infra/store/userStore";
+
+useUserStore()
 </script>
 
 <template>

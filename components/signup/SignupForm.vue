@@ -6,8 +6,10 @@ import {maxLengthValidation} from "~/utils/validations/max-length.validation";
 import type {UserSignup} from "~/domain/user/entities/user-signup.entity";
 import UserClient from "~/infra/api-client/users/user.client";
 import signinContent from "~/utils/content/signin.content";
+import {useUserStore} from "~/infra/store/userStore";
 
 const {$event} = useNuxtApp()
+const userStore = useUserStore()
 
 const signupForm = ref(null)
 const signupLoader = ref(false)
@@ -62,7 +64,7 @@ const submit = async () => {
 				const userClient = new UserClient()
 				const userData = await userClient.signup(userSignup)
 
-				console.log({userData})
+				userStore.saveUser(userData)
 
 				$event('show-alert', {
 					type: 'success',
