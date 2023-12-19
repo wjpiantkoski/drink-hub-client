@@ -3,6 +3,10 @@ import signinContent from "~/utils/content/signin.content";
 import {requiredValidation} from "~/utils/validations/required.validation";
 import {emailValidation} from "~/utils/validations/email.validation";
 import type {UserSignin} from "~/domain/user/entities/user-signin.entity";
+import UserRepository from "~/infra/repository/users/user.repository";
+import type {User} from "~/domain/user/entities/user.entity";
+import type { UserToken } from "~/domain/user/entities/user-token.entity";
+
 export default {
 	data: () => ({
 		signinContent,
@@ -17,22 +21,31 @@ export default {
 		},
 		submitLoader: false,
 		email: null,
-		password: null
+		password: null,
 	}),
 	methods: {
 		async submit(): Promise<void> {
-			const {valid} = await this.$refs.signinForm.validate()
+			try {
+				const {valid} = await this.$refs.signinForm.validate()
 
-			if (valid) {
-				this.$data.submitLoader = true
+				if (valid) {
+					this.$data.submitLoader = true
 
-				const userSignin: UserSignin = {
-					password: this.$data.password.trim(),
-					email: this.$data.email.trim().toLowerCase()
+					const userSignin: UserSignin = {
+						password: this.$data.password.trim(),
+						email: this.$data.email.trim().toLowerCase()
+					}
+
+					const userRepository = new UserRepository()
+					const data: UserToken = await userRepository.signin(userSignin)
+
+					await this.resetForm()
 				}
-
-				await this.resetForm()
-
+			} catch (err) {
+				if (process.env.NODE_ENV !== 'product') {
+					console.error(err)
+				}
+			} finally {
 				this.$data.submitLoader = false
 			}
 		},
