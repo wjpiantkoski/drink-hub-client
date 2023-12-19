@@ -5,8 +5,8 @@ import {emailValidation} from "~/utils/validations/email.validation";
 import type {UserSignin} from "~/domain/user/entities/user-signin.entity";
 import UserRepository from "~/infra/repository/users/user.repository";
 import type {UserToken} from "~/domain/user/entities/user-token.entity";
-import type {User} from "~/domain/user/entities/user.entity";
-import {use} from "h3";
+
+const {$event} = useNuxtApp()
 
 const rules = {
 	email: [
@@ -58,7 +58,10 @@ const submit = async () => {
 			}
 		}
 	} catch {
-		//todo alert de credenciais inválidas
+		$event('show-alert', {
+			type: 'error',
+			text: 'E-mail ou senha inválidos'
+		})
 	} finally {
 		signinLoader.value = false
 	}
