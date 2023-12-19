@@ -1,5 +1,5 @@
-<script lang="ts"></script>
-
 <template>
-	<h1>sign in</h1>
+	<v-container fluid class="signin-container">
+
+	</v-container>
 </template>
