@@ -20,15 +20,9 @@ export default class UserRepository {
 	}
 
 	public async signup (data: UserSignup): Promise<User> {
-		const response: any = await $fetch(`${this.apiHost}/sign-up`, {
+		return await $fetch(`${this.apiHost}/sign-up`, {
 			method: 'post',
 			body: data
 		})
-
-		return {
-			id: response.data.id,
-			name: response.data.name,
-			email: response.data.email
-		}
 	}
 }
