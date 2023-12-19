@@ -9,6 +9,9 @@ export default {
 			email: [
 				requiredValidation,
 				emailValidation
+			],
+			password: [
+				requiredValidation
 			]
 		}
 	}),
@@ -32,6 +35,7 @@ export default {
 			<v-text-field
 				type="password"
 				label="Senha"
+				:rules="rules.password"
 			></v-text-field>
 		</div>
 
