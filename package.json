@@ -13,12 +13,17 @@
     "@nuxt/devtools": "latest",
     "cz-conventional-changelog": "^3.3.0",
     "nuxt": "^3.8.2",
+    "vite-plugin-vuetify": "^2.0.1",
     "vue": "^3.3.12",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.2.5",
+    "vuetify": "^3.4.7"
   },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "dependencies": {
+    "@mdi/font": "^7.3.67"
   }
 }
