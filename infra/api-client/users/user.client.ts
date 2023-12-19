@@ -3,7 +3,7 @@ import type {User} from "../../../domain/user/entities/user.entity";
 import type {UserSignup} from "../../../domain/user/entities/user-signup.entity";
 import type {UserToken} from "../../../domain/user/entities/user-token.entity";
 
-export default class UserRepository {
+export default class UserClient {
 
 	private apiHost: string
 

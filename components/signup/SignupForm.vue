@@ -4,7 +4,7 @@ import {emailValidation} from "~/utils/validations/email.validation";
 import {minLengthValidation} from "~/utils/validations/min-length.validation";
 import {maxLengthValidation} from "~/utils/validations/max-length.validation";
 import type {UserSignup} from "~/domain/user/entities/user-signup.entity";
-import UserRepository from "~/infra/repository/users/user.repository";
+import UserClient from "~/infra/api-client/users/user.client";
 import signinContent from "~/utils/content/signin.content";
 
 const {$event} = useNuxtApp()
@@ -59,8 +59,8 @@ const submit = async () => {
 					password: signupData.password
 				}
 
-				const userRepository = new UserRepository()
-				const userData = await userRepository.signup(userSignup)
+				const userClient = new UserClient()
+				const userData = await userClient.signup(userSignup)
 
 				console.log({userData})
 

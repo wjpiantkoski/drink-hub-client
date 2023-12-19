@@ -3,7 +3,7 @@ import signinContent from "~/utils/content/signin.content";
 import {requiredValidation} from "~/utils/validations/required.validation";
 import {emailValidation} from "~/utils/validations/email.validation";
 import type {UserSignin} from "~/domain/user/entities/user-signin.entity";
-import UserRepository from "~/infra/repository/users/user.repository";
+import UserClient from "~/infra/api-client/users/user.client";
 import type {UserToken} from "~/domain/user/entities/user-token.entity";
 
 const {$event} = useNuxtApp()
@@ -49,8 +49,8 @@ const submit = async () => {
 					email: signinData.email.trim().toLowerCase()
 				}
 
-				const userRepository = new UserRepository()
-				const userToken: UserToken = await userRepository.signin(userSignin)
+				const userClient = new UserClient()
+				const userToken: UserToken = await userClient.signin(userSignin)
 
 				console.log({userToken})
 
