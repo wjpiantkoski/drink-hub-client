@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import signinContent from "~/utils/content/signin.content";
+import SignupForm from "~/components/signup/SignupForm.vue";
 
 const {$listen} = useNuxtApp()
-
 const showDialog = ref(false)
 
 const openDialog = () => {
@@ -15,10 +15,11 @@ const closeDialog = async () => {
 }
 
 $listen('show-signup-dialog', openDialog)
+$listen('close-signup-dialog', closeDialog)
 </script>
 
 <template>
-	<v-dialog width="400" v-model="showDialog">
+	<v-dialog width="400" v-model="showDialog" persistent>
 		<v-card>
 			<v-card-title class="d-flex align-center">
 				<v-btn
@@ -32,7 +33,9 @@ $listen('show-signup-dialog', openDialog)
 				<span>{{ signinContent.SIGNUP_DIALOG_TITLE }}</span>
 			</v-card-title>
 
-			<v-card-text></v-card-text>
+			<v-card-text>
+				<SignupForm/>
+			</v-card-text>
 		</v-card>
 	</v-dialog>
 </template>
