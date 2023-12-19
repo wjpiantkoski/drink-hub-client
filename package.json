@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
+    "@types/validator": "^13.11.7",
     "cz-conventional-changelog": "^3.3.0",
     "nuxt": "^3.8.2",
     "vite-plugin-vuetify": "^2.0.1",
@@ -27,6 +28,7 @@
     "@mdi/font": "^7.3.67",
     "fibers": "^5.0.3",
     "sass": "^1.69.5",
-    "sass-loader": "^13.3.2"
+    "sass-loader": "^13.3.2",
+    "validator": "^13.11.0"
   }
 }

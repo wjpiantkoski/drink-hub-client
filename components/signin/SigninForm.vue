@@ -1,18 +1,30 @@
 <script lang="ts">
 import signinContent from "~/utils/content/signin.content";
+import {requiredValidation} from "~/utils/validations/required.validation";
+import {emailValidation} from "~/utils/validations/email.validation";
 export default {
 	data: () => ({
-		signinContent
-	})
+		signinContent,
+		rules: {
+			email: [
+				requiredValidation,
+				emailValidation
+			]
+		}
+	}),
+	methods: {
+		submit() {}
+	}
 }
 </script>
 
 <template>
-	<v-form @submit.prevent="">
+	<v-form @submit.prevent="submit">
 		<div>
 			<v-text-field
 				type="email"
 				label="E-mail"
+				:rules="rules.email"
 			></v-text-field>
 		</div>
 
