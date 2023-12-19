@@ -11,5 +11,7 @@ import signinContent from "~/utils/content/signin.content";
 				<SigninForm/>
 			</v-card-text>
 		</v-card>
+
+		<SignupDialog/>
 	</v-container>
 </template>

@@ -66,6 +66,10 @@ const submit = async () => {
 		signinLoader.value = false
 	}
 }
+
+const openSignupDialog = () => {
+	$event('show-signup-dialog')
+}
 </script>
 
 <template>
@@ -88,8 +92,19 @@ const submit = async () => {
 			></v-text-field>
 		</div>
 
-		<div class="text-right mt-2">
+		<div class="d-flex align-center justify-space-between mt-2 w-100">
 			<v-btn
+				class="d-block"
+				variant="outlined"
+				color="success"
+				@click="openSignupDialog()"
+				:disabled="signinLoader"
+			>
+				{{ signinContent.SIGNUP_DIALOG_OPEN_BUTTON }}
+			</v-btn>
+
+			<v-btn
+				class="d-block"
 				type="submit"
 				color="success"
 				:loading="signinLoader"
