@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
+    "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
     "@types/validator": "^13.11.7",
     "cz-conventional-changelog": "^3.3.0",
     "nuxt": "^3.8.2",
