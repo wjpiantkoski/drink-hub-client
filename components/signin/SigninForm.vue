@@ -2,6 +2,7 @@
 import signinContent from "~/utils/content/signin.content";
 import {requiredValidation} from "~/utils/validations/required.validation";
 import {emailValidation} from "~/utils/validations/email.validation";
+import type {UserSignin} from "~/domain/user/entities/user-signin.entity";
 export default {
 	data: () => ({
 		signinContent,
@@ -13,21 +14,45 @@ export default {
 			password: [
 				requiredValidation
 			]
-		}
+		},
+		submitLoader: false,
+		email: null,
+		password: null
 	}),
 	methods: {
-		submit() {}
+		async submit(): Promise<void> {
+			const {valid} = await this.$refs.signinForm.validate()
+
+			if (valid) {
+				this.$data.submitLoader = true
+
+				const userSignin: UserSignin = {
+					password: this.$data.password.trim(),
+					email: this.$data.email.trim().toLowerCase()
+				}
+
+				await this.resetForm()
+
+				this.$data.submitLoader = false
+			}
+		},
+		async resetForm(): Promise<void> {
+			this.$data.email = null
+			this.$data.password = null
+			await this.$refs.signinForm.reset()
+		}
 	}
 }
 </script>
 
 <template>
-	<v-form @submit.prevent="submit">
+	<v-form ref="signinForm" @submit.prevent="submit">
 		<div>
 			<v-text-field
 				type="email"
 				label="E-mail"
 				:rules="rules.email"
+				v-model="email"
 			></v-text-field>
 		</div>
 
@@ -36,6 +61,7 @@ export default {
 				type="password"
 				label="Senha"
 				:rules="rules.password"
+				v-model="password"
 			></v-text-field>
 		</div>
 
@@ -43,6 +69,7 @@ export default {
 			<v-btn
 				type="submit"
 				color="success"
+				:loading="submitLoader"
 			>
 				{{ signinContent.SIGNIN_FORM_SUBMIT_BUTTON }}
 			</v-btn>
