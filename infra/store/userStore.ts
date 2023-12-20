@@ -2,23 +2,23 @@ import {defineStore} from "pinia";
 import type {User} from "../../domain/user/entities/user.entity";
 import type {UserToken} from "../../domain/user/entities/user-token.entity";
 
+type UserState = {
+	user: any,
+	token: any
+}
 export const useUserStore = defineStore('user', {
-	state: () => {
+	state: (): UserState => {
 		return {
-			user: {},
-			token: ''
+			user: null,
+			token: null
 		}
-	},
-	getters: {
-		getUser: state => state.user,
-		getToken: state => state.token
 	},
 	actions: {
 		saveUser(user?: User) {
-			this.user = user ? user : {}
+			this.user = user ? user : null
 		},
 		saveToken(data?: UserToken) {
-			this.token = data ? data.token : ''
+			this.token = data ? data.token : null
 		}
 	},
 	persist: true
