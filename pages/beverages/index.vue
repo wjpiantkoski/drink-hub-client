@@ -79,7 +79,9 @@ export default defineComponent({
 		<v-col class="v-col-12">
 			<h1 class="text-h2">Bebidas</h1>
 		</v-col>
+	</v-row>
 
+	<v-row>
 		<v-col class="v-col-lg-3 v-col-md-4 v-col-sm-12">
 			<v-select
 				v-model="selectedCategory"
