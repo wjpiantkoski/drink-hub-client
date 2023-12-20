@@ -5,9 +5,9 @@ import {requiredValidation} from "~/utils/validations/required.validation";
 import {emailValidation} from "~/utils/validations/email.validation";
 import type {UserSignin} from "~/domain/user/entities/user-signin.entity";
 import UserClient from "~/infra/api-client/users/user.client";
-import type {UserToken} from "~/domain/user/entities/user-token.entity";
 import {useUserStore} from "~/infra/store/userStore";
 import {useRouter} from "vue-router";
+import type {UserSigninResponse} from "~/domain/user/entities/user-signin-response.entity";
 
 const {$event} = useNuxtApp()
 const userStore = useUserStore()
@@ -55,9 +55,10 @@ const submit = async () => {
 				}
 
 				const userClient = new UserClient()
-				const userToken: UserToken = await userClient.signin(userSignin)
+				const response: UserSigninResponse = await userClient.signin(userSignin)
 
-				userStore.saveToken(userToken)
+				userStore.saveToken({token: response.token})
+				userStore.saveUser(response.user)
 
 				await router.push('/beverages')
 				await resetForm()

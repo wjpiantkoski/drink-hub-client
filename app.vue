@@ -12,7 +12,7 @@ export default defineComponent({
 	},
 	computed: {
 		hasToken() {
-			return !!this.userStore.getToken
+			return !!this.userStore.token
 		}
 	}
 })

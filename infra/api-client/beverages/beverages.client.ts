@@ -13,7 +13,7 @@ export default class BeveragesClient {
 	}
 
 	public async getBeveragesByCategory(categoryId: string): Promise<Beverage[]> {
-		const token = this.userStore.getToken
+		const token = this.userStore.token
 
 		return await $fetch(`${this.apiHost}/categories/${categoryId}`, {
 			method: 'get',
@@ -24,7 +24,7 @@ export default class BeveragesClient {
 	}
 
 	public async getBeverage(beverageId: string): Promise<Beverage[]> {
-		const token = this.userStore.getToken
+		const token = this.userStore.token
 
 		return await $fetch(`${this.apiHost}/${beverageId}`, {
 			method: 'get',
