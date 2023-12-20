@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import signinContent from "~/utils/content/signin.content";
+import signupContent from "~/utils/content/signup.content";
 import {requiredValidation} from "~/utils/validations/required.validation";
 import {emailValidation} from "~/utils/validations/email.validation";
 import type {UserSignin} from "~/domain/user/entities/user-signin.entity";
@@ -105,7 +106,7 @@ const openSignupDialog = () => {
 				@click="openSignupDialog()"
 				:disabled="signinLoader"
 			>
-				{{ signinContent.SIGNUP_DIALOG_OPEN_BUTTON }}
+				{{ signupContent.SIGNUP_DIALOG_OPEN_BUTTON }}
 			</v-btn>
 
 			<v-btn
