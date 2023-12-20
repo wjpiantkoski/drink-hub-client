@@ -7,6 +7,7 @@ import BeverageListCard from "~/components/beverage/BeverageListCard.vue";
 import BeverageDialog from "~/components/beverage/BeverageDialog.vue";
 import BookmarkClient from "~/infra/api-client/bookmarks/bookmark.client";
 import {useUserStore} from "~/infra/store/userStore";
+import {useBookmarkStore} from "~/infra/store/bookmarkStore";
 
 definePageMeta({middleware: 'auth'})
 
@@ -19,6 +20,7 @@ export default defineComponent({
 		const beverages = ref([])
 		const beveragesLoading = ref(true)
 		const userStore = useUserStore()
+		const bookmarkStore = useBookmarkStore()
 
 		const getCategories = async () => {
 			try {
@@ -63,7 +65,7 @@ export default defineComponent({
 				const bookmarkClient = new BookmarkClient()
 				const bookmarks = await bookmarkClient.getBookmarks(userStore.user.id)
 
-				console.log({bookmarks})
+				bookmarkStore.saveBookmarks(bookmarks)
 			} catch (err) {
 				console.error(err)
 			}
