@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import signinContent from "~/utils/content/signin.content";
+definePageMeta({middleware: 'auth'})
 </script>
 
 <template>

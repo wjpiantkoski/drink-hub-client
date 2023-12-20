@@ -14,11 +14,11 @@ export const useUserStore = defineStore('user', {
 		getToken: state => state.token
 	},
 	actions: {
-		saveUser(user: User) {
-			this.user = user
+		saveUser(user?: User) {
+			this.user = user ? user : {}
 		},
-		saveToken(data: UserToken) {
-			this.token = data.token
+		saveToken(data?: UserToken) {
+			this.token = data ? data.token : ''
 		}
 	},
 	persist: {
