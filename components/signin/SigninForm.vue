@@ -6,9 +6,11 @@ import type {UserSignin} from "~/domain/user/entities/user-signin.entity";
 import UserClient from "~/infra/api-client/users/user.client";
 import type {UserToken} from "~/domain/user/entities/user-token.entity";
 import {useUserStore} from "~/infra/store/userStore";
+import {useRouter} from "vue-router";
 
 const {$event} = useNuxtApp()
 const userStore = useUserStore()
+const router = useRouter()
 
 const rules = {
 	email: [
@@ -56,6 +58,7 @@ const submit = async () => {
 
 				userStore.saveToken(userToken)
 
+				await router.push('/beverages')
 				await resetForm()
 			}
 		}
