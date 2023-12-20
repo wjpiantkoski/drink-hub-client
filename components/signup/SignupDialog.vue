@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import signinContent from "~/utils/content/signin.content";
+import signupContent from "~/utils/content/signup.content";
 import SignupForm from "~/components/signup/SignupForm.vue";
 
 const {$listen} = useNuxtApp()
@@ -30,7 +30,7 @@ $listen('close-signup-dialog', closeDialog)
 					@click="closeDialog()"
 				></v-btn>
 
-				<span>{{ signinContent.SIGNUP_DIALOG_TITLE }}</span>
+				<span>{{ signupContent.SIGNUP_DIALOG_TITLE }}</span>
 			</v-card-title>
 
 			<v-card-text>

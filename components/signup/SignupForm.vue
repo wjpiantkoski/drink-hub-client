@@ -5,8 +5,8 @@ import {minLengthValidation} from "~/utils/validations/min-length.validation";
 import {maxLengthValidation} from "~/utils/validations/max-length.validation";
 import type {UserSignup} from "~/domain/user/entities/user-signup.entity";
 import UserClient from "~/infra/api-client/users/user.client";
-import signinContent from "~/utils/content/signin.content";
 import {useUserStore} from "~/infra/store/userStore";
+import signupContent from "~/utils/content/signup.content";
 
 const {$event} = useNuxtApp()
 const userStore = useUserStore()
@@ -68,7 +68,7 @@ const submit = async () => {
 
 				$event('show-alert', {
 					type: 'success',
-					text: signinContent.SIGNUP_SUCCESS_MESSAGE
+					text: signupContent.SIGNUP_SUCCESS_MESSAGE
 				})
 
 				closeSignupDialog()
@@ -80,8 +80,8 @@ const submit = async () => {
 		console.error(err)
 		$event('show-alert', {
 			type: 'error',
-			title: signinContent.SIGNUP_ERROR_TITLE,
-			text: signinContent.SIGNUP_ERROR_MESSAGE
+			title: signupContent.SIGNUP_ERROR_TITLE,
+			text: signupContent.SIGNUP_ERROR_MESSAGE
 		})
 	} finally {
 		signupLoader.value = false
@@ -124,7 +124,7 @@ const submit = async () => {
 				color="success"
 				:loading="signupLoader"
 			>
-				{{ signinContent.SIGNIN_FORM_SUBMIT_BUTTON }}
+				{{ signupContent.SIGNUP_DIALOG_OPEN_BUTTON }}
 			</v-btn>
 		</div>
 	</v-form>
