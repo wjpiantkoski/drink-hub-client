@@ -21,7 +21,5 @@ export const useUserStore = defineStore('user', {
 			this.token = data ? data.token : ''
 		}
 	},
-	persist: {
-		storage: persistedState.localStorage,
-	}
+	persist: true
 })

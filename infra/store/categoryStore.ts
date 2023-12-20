@@ -18,7 +18,5 @@ export const useCategoryStore = defineStore('category', {
 			this.categories = categories
 		}
 	},
-	persist: {
-		storage: persistedState.localStorage,
-	}
+	persist: true
 })
