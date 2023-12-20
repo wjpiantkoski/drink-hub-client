@@ -4,11 +4,12 @@ import {useCategoryStore} from "~/infra/store/categoryStore";
 import categoryContent from "~/utils/content/category.content";
 import BeveragesClient from "~/infra/api-client/beverages/beverages.client";
 import BeverageListCard from "~/components/beverage/BeverageListCard.vue";
+import BeverageDialog from "~/components/beverage/BeverageDialog.vue";
 
 definePageMeta({middleware: 'auth'})
 
 export default defineComponent({
-	components: {BeverageListCard},
+	components: {BeverageDialog, BeverageListCard},
 	setup() {
 		const {$event} = useNuxtApp()
 		const categoryStore = useCategoryStore()
@@ -108,6 +109,8 @@ export default defineComponent({
 				<BeverageListCard :beverage="beverage"/>
 			</v-col>
 		</v-row>
+
+		<BeverageDialog/>
 	</v-container>
 </template>
 
