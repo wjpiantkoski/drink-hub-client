@@ -2,9 +2,10 @@
 import {useUserStore} from "~/infra/store/userStore";
 import Toolbar from "~/components/@shared/Toolbar.vue";
 import Alert from "~/components/@shared/Alert.vue";
+import PageLoader from "~/components/@shared/PageLoader.vue";
 
 export default defineComponent({
-	components: {Alert, Toolbar},
+	components: {PageLoader, Alert, Toolbar},
 	setup() {
 		const userStore = useUserStore()
 		return {userStore}
@@ -23,6 +24,7 @@ export default defineComponent({
 			<Toolbar v-if="hasToken"/>
 			<NuxtPage/>
 			<Alert/>
+			<PageLoader/>
 		</v-app>
 	</NuxtLayout>
 </template>
