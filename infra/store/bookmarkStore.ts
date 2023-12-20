@@ -4,7 +4,7 @@ type BookmarkState = {
 	bookmarks: Bookmark[]
 }
 
-export const useCategoryStore = defineStore('bookmark', {
+export const useBookmarkStore = defineStore('bookmark', {
 	state: (): BookmarkState => {
 		return {
 			bookmarks: []
