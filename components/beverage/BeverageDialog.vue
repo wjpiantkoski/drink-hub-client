@@ -2,6 +2,7 @@
 import BeveragesClient from "~/infra/api-client/beverages/beverages.client";
 
 const {$listen, $event} = useNuxtApp()
+const config = useRuntimeConfig()
 
 const showBeverageDialog = ref(false)
 const beverageLoading = ref(false)
@@ -24,6 +25,19 @@ const getBeverage = async (beverageId: string) => {
 	} finally {
 		beverageLoading.value = false
 	}
+}
+
+const closeDialog = () => {
+	showBeverageDialog.value = false
+	beverage.value = {}
+}
+
+const getImageUrl = (image: string): string => {
+	if (image) {
+		return `${config.public.API_HOST_ADDRESS}/images/${image}`
+	}
+
+	return ''
 }
 
 $listen('show-beverage-dialog', (data: any) => {
@@ -50,8 +64,35 @@ $listen('show-beverage-dialog', (data: any) => {
 			</v-card-text>
 		</v-card>
 
-		<v-card v-else>
-			<v-card-title>{{ beverage.name }}</v-card-title>
+		<v-card color="grey-lighten-4" v-else>
+			<v-img
+				cover
+				height="200"
+				class="align-end text-white"
+				crossorigin="anonymous"
+				:src="getImageUrl(beverage.image)"
+			>
+				<v-card-title>{{ beverage.name }}</v-card-title>
+			</v-img>
+
+			<v-card-text>
+				{{ beverage.description }}
+			</v-card-text>
+
+			<v-card-actions>
+				<v-spacer></v-spacer>
+
+				<v-btn
+					color="warning"
+					icon="mdi-star-plus"
+				></v-btn>
+
+				<v-btn
+					color="error"
+					icon="mdi-close"
+					@click="closeDialog()"
+				></v-btn>
+			</v-card-actions>
 		</v-card>
 	</v-dialog>
 </template>
