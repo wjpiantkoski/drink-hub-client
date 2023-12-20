@@ -2,6 +2,7 @@
 import CategoryClient from "~/infra/api-client/categories/category.client";
 import {useCategoryStore} from "~/infra/store/categoryStore";
 import categoryContent from "~/utils/content/category.content";
+import BeveragesClient from "~/infra/api-client/beverages/beverages.client";
 
 definePageMeta({middleware: 'auth'})
 
@@ -10,6 +11,7 @@ export default defineComponent({
 		const {$event} = useNuxtApp()
 		const categoryStore = useCategoryStore()
 		const selectedCategory = ref('')
+		const beverages = ref([])
 
 		const getCategories = async () => {
 			try {
@@ -20,6 +22,11 @@ export default defineComponent({
 					const categories = await categoryClient.getCategories()
 
 					categoryStore.saveCategories(categories)
+					selectedCategory.value = categoryStore.categories[0]?.id
+
+					await getBeverages()
+				} else {
+					selectedCategory.value = categoryStore.categories[0]?.id
 				}
 			} catch (err) {
 				$event('show-alert', {
@@ -31,10 +38,23 @@ export default defineComponent({
 			}
 		}
 
+		const getBeverages = async () => {
+			try {
+				const beverageClient = new BeveragesClient()
+				const beveragesData: any = await beverageClient.getBeveragesByCategory(selectedCategory.value)
+
+				beverages.value = beveragesData
+			} catch (err) {
+				console.error(err)
+			}
+		}
+
 		return {
 			getCategories,
 			categoryStore,
-			selectedCategory
+			selectedCategory,
+			getBeverages,
+			beverages
 		}
 	},
 	created() {
@@ -42,10 +62,12 @@ export default defineComponent({
 	},
 	computed: {
 		categories() {
-			return [
-				{ id: '', name: 'Todas' },
-				...this.categoryStore.categories
-			]
+			return this.categoryStore.categories
+		}
+	},
+	watch: {
+		selectedCategory() {
+			this.getBeverages()
 		}
 	}
 })
