@@ -5,8 +5,10 @@ import {emailValidation} from "~/utils/validations/email.validation";
 import type {UserSignin} from "~/domain/user/entities/user-signin.entity";
 import UserClient from "~/infra/api-client/users/user.client";
 import type {UserToken} from "~/domain/user/entities/user-token.entity";
+import {useUserStore} from "~/infra/store/userStore";
 
 const {$event} = useNuxtApp()
+const userStore = useUserStore()
 
 const rules = {
 	email: [
@@ -52,7 +54,7 @@ const submit = async () => {
 				const userClient = new UserClient()
 				const userToken: UserToken = await userClient.signin(userSignin)
 
-				console.log({userToken})
+				userStore.saveToken(userToken)
 
 				await resetForm()
 			}
