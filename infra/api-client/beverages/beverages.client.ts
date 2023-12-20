@@ -23,4 +23,15 @@ export default class BeveragesClient {
 		})
 	}
 
+	public async getBeverage(beverageId: string): Promise<Beverage[]> {
+		const token = this.userStore.getToken
+
+		return await $fetch(`${this.apiHost}/${beverageId}`, {
+			method: 'get',
+			headers: {
+				Authorization: `bearer ${token}`
+			}
+		})
+	}
+
 }
