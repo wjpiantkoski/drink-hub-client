@@ -4,7 +4,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
 	const userStore = useUserStore()
 	const token = userStore.getToken
 
-	if (!token) {
-		return navigateTo('/signin')
+	if (token) {
+		return navigateTo('/beverages')
 	}
 })
