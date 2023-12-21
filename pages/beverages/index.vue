@@ -8,6 +8,7 @@ import {useUserStore} from "~/infra/store/userStore";
 import {useBookmarkStore} from "~/infra/store/bookmarkStore";
 import beverageContent from "../../utils/content/beverage.content";
 import BeverageDialogForm from "~/components/beverage/BeverageDialogForm.vue";
+import getCategoriesService from "~/domain/category/services/get-categories.service";
 
 export default defineComponent({
 	components: {BeverageDialogForm, BeverageDialog, BeverageListCard},
@@ -18,28 +19,13 @@ export default defineComponent({
 		const selectedCategory = ref('')
 		const beverages: any = ref(null)
 		const beveragesLoading = ref(true)
-		const userStore = useUserStore()
 		const bookmarkStore = useBookmarkStore()
 
-		const getCategories = async () => {
-			try {
-				$event('show-dialog-loader')
+		const loadData = async () => {
+			$event('show-dialog-loader')
 
-				if (!categoryStore.getCategories.length) {
-					await categoryStore.getCategories()
-					selectedCategory.value = categoryStore.categories[0]?.id
-					await getBeverages()
-				} else {
-					selectedCategory.value = categoryStore.categories[0]?.id
-				}
-			} catch (err) {
-				$event('show-alert', {
-					type: 'error',
-					text: categoryContent.CATEGORY_LIST_ERROR
-				})
-			} finally {
-				$event('close-dialog-loader')
-			}
+			await getCategoriesService()
+			selectedCategory.value = categoryStore.categories[0]?.id
 		}
 
 		const getBeverages = async () => {
@@ -73,7 +59,7 @@ export default defineComponent({
 		})
 
 		return {
-			getCategories,
+			loadData,
 			categoryStore,
 			selectedCategory,
 			getBeverages,
@@ -84,7 +70,7 @@ export default defineComponent({
 		}
 	},
 	mounted() {
-		this.getCategories()
+		this.loadData()
 		this.getBookmarks()
 	},
 	computed: {
