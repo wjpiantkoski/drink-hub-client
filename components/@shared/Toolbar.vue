@@ -8,7 +8,7 @@ const userStore = useUserStore()
 const router = useRouter()
 
 const logout = async () => {
-	userStore.saveToken()
+	userStore.logout()
 	await router.push('/signin')
 }
 </script>

@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
 import type {User} from "../../domain/user/entities/user.entity";
 import type {UserToken} from "../../domain/user/entities/user-token.entity";
+import {useBookmarkStore} from "~/infra/store/bookmarkStore";
 
 type UserState = {
 	user: any,
@@ -19,6 +20,13 @@ export const useUserStore = defineStore('user', {
 		},
 		saveToken(data?: UserToken) {
 			this.token = data ? data.token : null
+		},
+		logout() {
+			this.user = null
+			this.token = null
+
+			const bookmarkStore = useBookmarkStore()
+			bookmarkStore.bookmarks = []
 		}
 	},
 	persist: true
