@@ -3,13 +3,21 @@ import globalContent from "~/utils/content/global.content";
 import toolbarContent from "~/utils/content/toolbar.content";
 import {useRouter} from "vue-router";
 import logoutService from "~/domain/user/services/logout.service";
+import {useUserStore} from "~/infra/store/userStore";
+import {useBookmarkStore} from "~/infra/store/bookmarkStore";
 
 export default defineComponent({
 	setup() {
 		const router = useRouter()
 		const {$listen} = useNuxtApp()
 		const logout = async () => {
-			await logoutService()
+			const userStore = useUserStore()
+			const bookmarkStore = useBookmarkStore()
+
+			userStore.user = null
+			userStore.token = null
+			bookmarkStore.bookmarks = []
+
 			await router.push('/signin')
 		}
 
