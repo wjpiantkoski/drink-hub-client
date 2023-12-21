@@ -1,82 +1,88 @@
-<script lang="ts" setup>
+<script lang="ts">
 import signinContent from "~/utils/content/signin.content";
 import signupContent from "~/utils/content/signup.content";
 import {requiredValidation} from "~/utils/validations/required.validation";
 import {emailValidation} from "~/utils/validations/email.validation";
 import type {UserSignin} from "~/domain/user/entities/user-signin.entity";
-import UserClient from "~/infra/api-client/users/user.client";
-import {useUserStore} from "~/infra/store/userStore";
-import {useRouter} from "vue-router";
-import type {UserSigninResponse} from "~/domain/user/entities/user-signin-response.entity";
+import userSigninService from "~/domain/user/services/user-signin.service";
 
-const {$event} = useNuxtApp()
-const userStore = useUserStore()
-const router = useRouter()
+export default defineComponent({
+	setup() {
+		const {$event} = useNuxtApp()
 
-const rules = {
-	email: [
-		requiredValidation,
-		emailValidation
-	],
-	password: [
-		requiredValidation
-	]
-}
+		const rules = {
+			email: [
+				requiredValidation,
+				emailValidation
+			],
+			password: [
+				requiredValidation
+			]
+		}
 
+		const signinLoader = ref(false)
+		const signinForm = ref(null)
 
-const signinLoader = ref(false)
-const signinForm = ref(null)
+		const signinData = reactive({
+			email: '',
+			password: ''
+		})
 
-const signinData = reactive({
-	email: '',
-	password: ''
-})
+		const resetForm = async () => {
+			signinData.email = ''
+			signinData.password = ''
 
-const resetForm = async () => {
-	signinData.email = ''
-	signinData.password = ''
-
-	if (signinForm.value) {
-		await signinForm.value.reset()
-	}
-}
-
-const submit = async () => {
-	try {
-		if (signinForm.value) {
-			const {valid} = await signinForm.value.validate()
-
-			if (valid) {
-				signinLoader.value = true
-
-				const userSignin: UserSignin = {
-					password: signinData.password,
-					email: signinData.email.trim().toLowerCase()
-				}
-
-				const userClient = new UserClient()
-				const response: UserSigninResponse = await userClient.signin(userSignin)
-
-				userStore.saveToken({token: response.token})
-				userStore.saveUser(response.user)
-
-				await router.push('/beverages')
-				await resetForm()
+			if (signinForm.value) {
+				await signinForm.value.reset()
 			}
 		}
-	} catch {
-		$event('show-alert', {
-			type: 'error',
-			text: signinContent.SIGNIN_ERROR_MESSAGE
-		})
-	} finally {
-		signinLoader.value = false
-	}
-}
 
-const openSignupDialog = () => {
-	$event('show-signup-dialog')
-}
+		const openSignupDialog = () => {
+			$event('show-signup-dialog')
+		}
+
+		return {
+			rules,
+			signinData,
+			openSignupDialog,
+			signinLoader,
+			signupContent,
+			signinContent,
+			resetForm,
+			$event,
+		}
+	},
+	methods: {
+		async submit() {
+			try {
+				if (this.$refs.signinForm) {
+					const {valid} = await this.$refs.signinForm.validate()
+
+					if (valid) {
+						this.signinLoader = true
+
+						const userSignin: UserSignin = {
+							password: this.signinData.password,
+							email: this.signinData.email.trim().toLowerCase()
+						}
+
+						await userSigninService(userSignin)
+
+						await this.$router.push('/beverages')
+						await this.resetForm()
+					}
+				}
+			} catch {
+				this.$event('show-alert', {
+					type: 'error',
+					text: signinContent.SIGNIN_ERROR_MESSAGE
+				})
+			} finally {
+				this.signinLoader = false
+			}
+		}
+	}
+})
 </script>
 
 <template>
