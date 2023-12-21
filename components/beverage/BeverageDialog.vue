@@ -117,6 +117,7 @@ const removeBookmark = () => {
 	$event('show-dialog-remove-bookmark', {
 		beverageId: beverage.value.id
 	})
+	closeDialog()
 }
 
 $listen('show-beverage-dialog', openDialog)

@@ -39,4 +39,15 @@ export default class BookmarkClient {
 		})
 	}
 
+	public async removeBookmark(bookmarkId: string): Promise<void> {
+		const token = this.userStore.token
+
+		await axios(`${this.apiHost}/${bookmarkId}`, {
+			method: 'delete',
+			headers: {
+				Authorization: `bearer ${token}`
+			}
+		})
+	}
+
 }
