@@ -1,122 +1,136 @@
-<script lang="ts" setup>
+<script lang="ts">
 import beverageContent from "~/utils/content/beverage.content";
 import {requiredValidation} from "~/utils/validations/required.validation";
 import {minLengthValidation} from "~/utils/validations/min-length.validation";
 import {maxLengthValidation} from "~/utils/validations/max-length.validation";
-import {useCategoryStore} from "~/infra/store/categoryStore";
 import {useUserStore} from "~/infra/store/userStore";
 import BeveragesClient from "~/infra/api-client/beverages/beverages.client";
+import {useCategoryStore} from "~/infra/store/categoryStore";
+import createBeverageService from "~/domain/beverage/services/create-beverage.service";
 
-const {$event, $listen} = useNuxtApp()
-const userStore = useUserStore()
-const categoryStore = useCategoryStore()
-
-const beverageForm = ref(null)
-const beverageFormLoader = ref(false)
-const showBeverageFormDialog = ref(false)
-
-const openDialog = (data: any) => {
-	if (data) {
-		beverage.value = JSON.parse(JSON.stringify(data))
-	}
-
-	showBeverageFormDialog.value = true
-}
-
-const closeDialog = () => {
-	showBeverageFormDialog.value = false
-}
-
-const beverage = ref({
+const beverageInitialState = {
 	id: '',
 	name: '',
 	description: '',
 	categoryId: '',
 	image: []
-})
-
-const rules = {
-	name: [
-		requiredValidation,
-		(value: string) => minLengthValidation(value, 3),
-		(value: string) => maxLengthValidation(value, 50)
-	],
-	description: [
-		requiredValidation,
-		(value: string) => maxLengthValidation(value, 150)
-	],
-	categoryId: [
-		requiredValidation
-	],
-	image: [
-		(value: any) => value?.length === 1
-	]
 }
 
-const dialogTitle = reactive({
-	title: (beverage.value.id ?
-		beverageContent.BEVERAGE_INSERT_DIALOG_TITLE :
-		beverageContent.BEVERAGE_UPDATE_DIALOG_TITLE)
-})
+export default defineComponent({
+	setup() {
+		const {$event, $listen} = useNuxtApp()
+		const categoryStore = useCategoryStore()
 
-const resetData = async () => {
-	beverage.value = {
-		id: '',
-		name: '',
-		description: '',
-		categoryId: '',
-		image: []
-	}
+		const beverage = ref(beverageInitialState)
+		const beverageForm = ref(null)
+		const beverageFormLoader = ref(false)
+		const showBeverageFormDialog = ref(false)
 
-	if (beverageForm.value) {
-		beverageForm.value.reset()
-	}
-}
+		const rules = {
+			name: [
+				requiredValidation,
+				(value: string) => minLengthValidation(value, 3),
+				(value: string) => maxLengthValidation(value, 50)
+			],
+			description: [
+				requiredValidation,
+				(value: string) => maxLengthValidation(value, 150)
+			],
+			categoryId: [
+				requiredValidation
+			],
+			image: [
+				(value: any) => value?.length === 1
+			]
+		}
 
-const submit = async () => {
-	try {
-		if (beverageForm.value) {
-			beverageFormLoader.value = true
+		const resetData = async () => {
+			showBeverageFormDialog.value = false
+			beverage.value = beverageInitialState
 
-			const {valid} = await beverageForm.value.validate()
-
-			if (valid) {
-				const formData = new FormData()
-
-				formData.append('userId', userStore.user.id)
-				formData.append('image', beverage.value.image[0])
-				formData.append('name', beverage.value.name.trim())
-				formData.append('categoryId', beverage.value.categoryId)
-				formData.append('description', beverage.value.description.trim())
-
-				const beverageClient = new BeveragesClient()
-
-				if (beverage.value.id) {
-					await beverageClient.updateBeverage(beverage.value.id, formData)
-				} else {
-					await beverageClient.createBeverage(formData)
-				}
-
-				$event('refresh-beverages-list', {
-					categoryId: beverage.value.categoryId
-				})
-
-				showBeverageFormDialog.value = false
-				await resetData()
+			if (beverageForm.value) {
+				this.$refs.beverageForm.reset()
 			}
 		}
-	} catch (err) {
-		console.error(err)
-		$event('show-alert', {
-			type: 'error',
-			text: beverageContent.BEVERAGE_SUBMIT_ERROR_MESSAGE
-		})
-	} finally {
-		beverageFormLoader.value = false
-	}
-}
 
-$listen('show-dialog-beverage-form', openDialog)
+		const openDialog = (data: any) => {
+			if (data) {
+				beverage.value = JSON.parse(JSON.stringify(data))
+			}
+
+			showBeverageFormDialog.value = true
+		}
+
+		const closeDialog = () => {
+			showBeverageFormDialog.value = false
+			resetData()
+		}
+
+		$listen('show-dialog-beverage-form', openDialog)
+
+		return {
+			rules,
+			$event,
+			resetData,
+			beverage,
+			closeDialog,
+			categoryStore,
+			beverageContent,
+			beverageFormLoader,
+			showBeverageFormDialog
+		}
+	},
+	computed: {
+		dialogTitle() {
+			return (this.beverage.id ?
+				beverageContent.BEVERAGE_INSERT_DIALOG_TITLE :
+				beverageContent.BEVERAGE_UPDATE_DIALOG_TITLE)
+		},
+		categories() {
+			return this.categoryStore.categories
+		}
+	},
+	methods: {
+		async submit() {
+			try {
+				this.beverageFormLoader = true
+
+				if (this.$refs.beverageForm) {
+					const {valid} = await this.$refs.beverageForm.validate()
+
+					if (valid) {
+						if (this.beverage.id) {
+
+						} else {
+							await createBeverageService(this.beverage)
+						}
+
+						this.$event('refresh-beverages-list', {
+							categoryId: this.beverage.categoryId
+						})
+
+						this.$event('show-alert', {
+							type: 'success',
+							text: beverageContent.BEVERAGE_REMOVE_SUBMIT_SUCCESS_MESSAGE
+						})
+
+						this.beverageFormLoader = false
+						await this.resetData()
+					}
+				}
+			} catch (err) {
+				console.error(err)
+
+				this.$event('show-alert', {
+					type: 'error',
+					text: beverageContent.BEVERAGE_SUBMIT_ERROR_MESSAGE
+				})
+			} finally {
+				this.beverageFormLoader = false
+			}
+		}
+	}
+})
 </script>
 
 <template>
@@ -136,7 +150,7 @@ $listen('show-dialog-beverage-form', openDialog)
 					:disabled="beverageFormLoader"
 				></v-btn>
 
-				<span>{{ dialogTitle.title }}</span>
+				<span>{{ dialogTitle }}</span>
 			</v-card-title>
 
 			<v-card-text>
@@ -165,7 +179,7 @@ $listen('show-dialog-beverage-form', openDialog)
 					<div class="mt-1">
 						<v-select
 							label="Categoria"
-							:items="categoryStore.categories"
+							:items="categories"
 							item-title="name"
 							item-value="id"
 							v-model="beverage.categoryId"
