@@ -4,9 +4,9 @@ import {emailValidation} from "~/utils/validations/email.validation";
 import {minLengthValidation} from "~/utils/validations/min-length.validation";
 import {maxLengthValidation} from "~/utils/validations/max-length.validation";
 import type {UserSignup} from "~/domain/user/entities/user-signup.entity";
-import UserClient from "~/infra/api-client/users/user.client";
 import {useUserStore} from "~/infra/store/userStore";
 import signupContent from "~/utils/content/signup.content";
+import userSignupService from "~/domain/user/services/user-signup.service";
 
 const {$event} = useNuxtApp()
 const userStore = useUserStore()
@@ -61,10 +61,7 @@ const submit = async () => {
 					password: signupData.password
 				}
 
-				const userClient = new UserClient()
-				const userData = await userClient.signup(userSignup)
-
-				userStore.saveUser(userData)
+				await userSignupService(userSignup)
 
 				$event('show-alert', {
 					type: 'success',
@@ -77,7 +74,6 @@ const submit = async () => {
 			}
 		}
 	} catch (err) {
-		console.error(err)
 		$event('show-alert', {
 			type: 'error',
 			title: signupContent.SIGNUP_ERROR_TITLE,

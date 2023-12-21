@@ -6,7 +6,6 @@ const {$listen} = useNuxtApp()
 const showDialog = ref(false)
 
 const openDialog = () => {
-	console.log('test')
 	showDialog.value = true
 }
 
