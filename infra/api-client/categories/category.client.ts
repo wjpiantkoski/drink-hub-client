@@ -1,6 +1,6 @@
 import type {Category} from "~/domain/category/entities/category.entity";
-import type {Store} from "pinia";
 import {useUserStore} from "~/infra/store/userStore";
+import axios from "axios";
 
 export default class CategoryClient {
 
@@ -16,11 +16,13 @@ export default class CategoryClient {
 	public async getCategories(): Promise<Category[]> {
 		const token = this.userStore.token
 
-		return await $fetch(`${this.apiHost}`, {
+		const response = await axios(`${this.apiHost}`, {
 			method: 'get',
 			headers: {
 				Authorization: `bearer ${token}`
 			}
 		})
+
+		return response.data
 	}
 }

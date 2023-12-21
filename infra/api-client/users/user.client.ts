@@ -1,8 +1,8 @@
 import type {UserSignin} from "../../../domain/user/entities/user-signin.entity";
 import type {User} from "../../../domain/user/entities/user.entity";
 import type {UserSignup} from "../../../domain/user/entities/user-signup.entity";
-import type {UserToken} from "../../../domain/user/entities/user-token.entity";
 import type {UserSigninResponse} from "~/domain/user/entities/user-signin-response.entity";
+import axios from "axios";
 
 export default class UserClient {
 
@@ -14,16 +14,20 @@ export default class UserClient {
 	}
 
 	public async signin (data: UserSignin): Promise<UserSigninResponse> {
-		return await $fetch(`${this.apiHost}/sign-in`, {
+		const response = await axios(`${this.apiHost}/sign-in`, {
+			data,
 			method: 'post',
-			body: data
 		})
+
+		return response.data
 	}
 
 	public async signup (data: UserSignup): Promise<User> {
-		return await $fetch(`${this.apiHost}/sign-up`, {
+		const response = await axios(`${this.apiHost}/sign-up`, {
+			data,
 			method: 'post',
-			body: data
 		})
+
+		return response.data
 	}
 }

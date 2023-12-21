@@ -1,5 +1,6 @@
 import {useUserStore} from "~/infra/store/userStore";
 import type {Bookmark} from "~/domain/bookmark/bookmark.entity";
+import axios from "axios";
 
 export default class BookmarkClient {
 
@@ -15,12 +16,14 @@ export default class BookmarkClient {
 	public async getBookmarks(userId: string): Promise<Bookmark[]> {
 		const token = this.userStore.token
 
-		return await $fetch(`${this.apiHost}/users/${userId}`, {
+		const response = await axios(`${this.apiHost}/users/${userId}`, {
 			method: 'get',
 			headers: {
 				Authorization: `bearer ${token}`
 			}
 		})
+
+		return response.data
 	}
 
 }
