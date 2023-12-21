@@ -72,6 +72,10 @@ export default defineComponent({
 			}
 		}
 
+		const addBeverage = () => {
+			$event('show-dialog-beverage-form')
+		}
+
 		return {
 			getCategories,
 			categoryStore,
@@ -79,7 +83,8 @@ export default defineComponent({
 			getBeverages,
 			beverages,
 			beveragesLoading,
-			getBookmarks
+			getBookmarks,
+			addBeverage
 		}
 	},
 	mounted() {
@@ -105,8 +110,17 @@ export default defineComponent({
 <template>
 	<v-container>
 		<v-row>
-			<v-col class="v-col-12">
+			<v-col class="v-col-12 d-flex align-center justify-space-between">
 				<h1 class="text-h2">{{ beverageContent.BEVERAGES_PAGE_TITLE }}</h1>
+
+				<v-btn
+					size="small"
+					color="primary"
+					@click="addBeverage()"
+					class="hidden-xs"
+				>
+					{{beverageContent.BEVERAGES_ADD_BUTTON_TITLE}}
+				</v-btn>
 			</v-col>
 		</v-row>
 
@@ -133,6 +147,13 @@ export default defineComponent({
 		</v-row>
 
 		<BeverageDialog/>
+
+		<v-btn
+			icon="mdi-plus"
+			color="primary"
+			class="hidden-sm-and-up beverage-floating-button"
+			@click="addBeverage()"
+		></v-btn>
 	</v-container>
 </template>
 
