@@ -26,7 +26,7 @@ export default class BeveragesClient {
 		return response.data
 	}
 
-	public async getBeverage(beverageId: string): Promise<Beverage[]> {
+	public async getBeverage(beverageId: string): Promise<Beverage> {
 		const token = this.userStore.token
 
 		const response = await axios(`${this.apiHost}/${beverageId}`, {
