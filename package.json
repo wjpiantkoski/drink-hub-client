@@ -7,13 +7,15 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
     "@types/validator": "^13.11.7",
     "cz-conventional-changelog": "^3.3.0",
+    "husky": "^8.0.0",
     "nuxt": "^3.8.2",
     "vite-plugin-vuetify": "^2.0.1",
     "vue": "^3.3.12",
