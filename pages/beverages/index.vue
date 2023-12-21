@@ -29,12 +29,8 @@ export default defineComponent({
 				$event('show-dialog-loader')
 
 				if (!categoryStore.getCategories.length) {
-					const categoryClient = new CategoryClient()
-					const categories = await categoryClient.getCategories()
-
-					categoryStore.saveCategories(categories)
+					await categoryStore.getCategories()
 					selectedCategory.value = categoryStore.categories[0]?.id
-
 					await getBeverages()
 				} else {
 					selectedCategory.value = categoryStore.categories[0]?.id
