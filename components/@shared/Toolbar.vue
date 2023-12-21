@@ -19,6 +19,10 @@ const logout = async () => {
 
 		<v-spacer></v-spacer>
 
+		<v-btn variant="plain" to="/beverages">
+			{{ toolbarContent.TOOLBAR_HOME_BUTTON }}
+		</v-btn>
+
 		<v-btn variant="plain" to="/bookmarks">
 			{{ toolbarContent.TOOLBAR_BOOKMARKS_BUTTON }}
 		</v-btn>
