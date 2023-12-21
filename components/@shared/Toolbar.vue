@@ -1,16 +1,23 @@
-<script lang="ts" setup>
+<script lang="ts">
 import globalContent from "~/utils/content/global.content";
 import toolbarContent from "~/utils/content/toolbar.content";
-import {useUserStore} from "~/infra/store/userStore";
-import {useRouter} from "vue-router";
+import logoutService from "~/domain/user/services/logout.service";
 
-const userStore = useUserStore()
-const router = useRouter()
+export default defineComponent({
+	setup() {
+		const logout = async () => {
+			await logoutService()
+		}
 
-const logout = async () => {
-	userStore.logout()
-	await router.push('/signin')
-}
+		return {
+			logout,
+			globalContent,
+			toolbarContent
+		}
+	}
+})
+
+
 </script>
 
 <template>
