@@ -9,11 +9,12 @@ import BookmarkClient from "~/infra/api-client/bookmarks/bookmark.client";
 import {useUserStore} from "~/infra/store/userStore";
 import {useBookmarkStore} from "~/infra/store/bookmarkStore";
 import beverageContent from "../../utils/content/beverage.content";
+import BeverageDialogForm from "~/components/beverage/BeverageDialogForm.vue";
 
 definePageMeta({middleware: 'auth'})
 
 export default defineComponent({
-	components: {BeverageDialog, BeverageListCard},
+	components: {BeverageDialogForm, BeverageDialog, BeverageListCard},
 	setup() {
 		const {$event} = useNuxtApp()
 		const categoryStore = useCategoryStore()
@@ -147,6 +148,7 @@ export default defineComponent({
 		</v-row>
 
 		<BeverageDialog/>
+		<BeverageDialogForm/>
 
 		<v-btn
 			icon="mdi-plus"
