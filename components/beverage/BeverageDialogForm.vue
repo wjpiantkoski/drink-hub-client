@@ -15,7 +15,11 @@ const beverageForm = ref(null)
 const beverageFormLoader = ref(false)
 const showBeverageFormDialog = ref(false)
 
-const openDialog = () => {
+const openDialog = (data: any) => {
+	if (data) {
+		beverage.value = JSON.parse(JSON.stringify(data))
+	}
+
 	showBeverageFormDialog.value = true
 }
 
@@ -24,6 +28,7 @@ const closeDialog = () => {
 }
 
 const beverage = ref({
+	id: '',
 	name: '',
 	description: '',
 	categoryId: '',
@@ -49,13 +54,14 @@ const rules = {
 }
 
 const dialogTitle = reactive({
-	title: (beverage.value ?
+	title: (beverage.value.id ?
 		beverageContent.BEVERAGE_INSERT_DIALOG_TITLE :
 		beverageContent.BEVERAGE_UPDATE_DIALOG_TITLE)
 })
 
 const resetData = async () => {
 	beverage.value = {
+		id: '',
 		name: '',
 		description: '',
 		categoryId: '',
@@ -84,7 +90,12 @@ const submit = async () => {
 				formData.append('description', beverage.value.description.trim())
 
 				const beverageClient = new BeveragesClient()
-				await beverageClient.createBeverage(formData)
+
+				if (beverage.value.id) {
+					await beverageClient.updateBeverage(beverage.value.id, formData)
+				} else {
+					await beverageClient.createBeverage(formData)
+				}
 
 				$event('refresh-beverages-list', {
 					categoryId: beverage.value.categoryId

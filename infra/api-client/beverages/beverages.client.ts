@@ -52,4 +52,17 @@ export default class BeveragesClient {
 		})
 	}
 
+	public async updateBeverage(beverageId: string, formData: FormData): Promise<void> {
+		const token = this.userStore.token
+
+		await axios(`${this.apiHost}/${beverageId}`, {
+			method: 'patch',
+			data: formData,
+			headers: {
+				'Content-Type': 'multipart/form-data',
+				Authorization: `bearer ${token}`
+			}
+		})
+	}
+
 }

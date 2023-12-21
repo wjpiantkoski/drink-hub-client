@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import BeveragesClient from "~/infra/api-client/beverages/beverages.client";
 import globalContent from "../../utils/content/global.content";
+import {useUserStore} from "~/infra/store/userStore";
 
 const {$listen, $event} = useNuxtApp()
 const config = useRuntimeConfig()
+const userStore = useUserStore()
 
 const showBeverageDialog = ref(false)
 const beverageLoading = ref(false)
-const beverage = ref({})
+const beverage: any = ref(null)
+const beverageOwner = ref(false)
 
 const getBeverage = async (beverageId: string) => {
 	try {
@@ -16,6 +19,8 @@ const getBeverage = async (beverageId: string) => {
 		const beverageClient = new BeveragesClient()
 
 		beverage.value = await beverageClient.getBeverage(beverageId)
+
+		setBeverageOwner()
 	} catch {
 		showBeverageDialog.value = false
 
@@ -28,9 +33,18 @@ const getBeverage = async (beverageId: string) => {
 	}
 }
 
+const setBeverageOwner = () => {
+	beverageOwner.value = beverage.value.userId === userStore.user.id
+}
+
 const closeDialog = () => {
 	showBeverageDialog.value = false
-	beverage.value = {}
+	beverage.value = null
+}
+
+const openDialog = (data: any) => {
+	getBeverage(data.beverageId)
+	showBeverageDialog.value = true
 }
 
 const getImageUrl = (image: string): string => {
@@ -41,10 +55,18 @@ const getImageUrl = (image: string): string => {
 	return ''
 }
 
-$listen('show-beverage-dialog', (data: any) => {
-	getBeverage(data.beverageId)
-	showBeverageDialog.value = true
-})
+const editBeverage = () => {
+	$event('show-dialog-beverage-form', {
+		id: beverage.value.id,
+		name: beverage.value.name,
+		description: beverage.value.description,
+		categoryId: beverage.value.category.id
+	})
+
+	closeDialog()
+}
+
+$listen('show-beverage-dialog', openDialog)
 </script>
 
 <template>
@@ -65,7 +87,7 @@ $listen('show-beverage-dialog', (data: any) => {
 			</v-card-text>
 		</v-card>
 
-		<v-card color="grey-lighten-4" v-else>
+		<v-card color="grey-lighten-4" v-if="beverage && !beverageLoading">
 			<v-img
 				cover
 				height="200"
@@ -82,6 +104,13 @@ $listen('show-beverage-dialog', (data: any) => {
 
 			<v-card-actions>
 				<v-spacer></v-spacer>
+
+				<v-btn
+					color="warning"
+					icon="mdi-pencil"
+					v-if="beverageOwner"
+					@click="editBeverage()"
+				></v-btn>
 
 				<v-btn
 					color="warning"

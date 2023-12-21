@@ -19,7 +19,7 @@ export default defineComponent({
 		const {$event} = useNuxtApp()
 		const categoryStore = useCategoryStore()
 		const selectedCategory = ref('')
-		const beverages = ref([])
+		const beverages: any = ref(null)
 		const beveragesLoading = ref(true)
 		const userStore = useUserStore()
 		const bookmarkStore = useBookmarkStore()
@@ -51,6 +51,8 @@ export default defineComponent({
 
 		const getBeverages = async () => {
 			try {
+				beverages.value = null
+
 				const beverageClient = new BeveragesClient()
 				const beveragesData: any = await beverageClient.getBeveragesByCategory(selectedCategory.value)
 
@@ -141,9 +143,9 @@ export default defineComponent({
 		<v-row>
 			<v-col
 				class="v-col-12 py-1"
-				v-for="beverage in beverages"
+				v-for="(beverage, index) in beverages"
 			>
-				<BeverageListCard :beverage="beverage"/>
+				<BeverageListCard :key="index" :beverage="beverage"/>
 			</v-col>
 		</v-row>
 
