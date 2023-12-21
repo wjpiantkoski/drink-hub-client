@@ -156,9 +156,6 @@ export default defineComponent({
 			</v-col>
 		</v-row>
 
-		<BeverageDialog/>
-		<BeverageDialogForm/>
-
 		<v-btn
 			icon="mdi-plus"
 			color="primary"

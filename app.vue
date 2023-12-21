@@ -3,9 +3,10 @@ import {useUserStore} from "~/infra/store/userStore";
 import Toolbar from "~/components/@shared/Toolbar.vue";
 import Alert from "~/components/@shared/Alert.vue";
 import PageLoader from "~/components/@shared/PageLoader.vue";
+import BeverageRemoveDialog from "~/components/beverage/BeverageRemoveDialog.vue";
 
 export default defineComponent({
-	components: {PageLoader, Alert, Toolbar},
+	components: {BeverageRemoveDialog, PageLoader, Alert, Toolbar},
 	setup() {
 		const userStore = useUserStore()
 		return {userStore}
@@ -23,8 +24,12 @@ export default defineComponent({
 		<v-app>
 			<Toolbar v-if="hasToken"/>
 			<NuxtPage/>
+
 			<Alert/>
 			<PageLoader/>
+			<BeverageDialog/>
+			<BeverageDialogForm/>
+			<BeverageRemoveDialog/>
 		</v-app>
 	</NuxtLayout>
 </template>

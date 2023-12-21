@@ -66,6 +66,11 @@ const editBeverage = () => {
 	closeDialog()
 }
 
+const removeBeverage = async () => {
+	$event('show-dialog-remove-beverage', beverage.value)
+	closeDialog()
+}
+
 $listen('show-beverage-dialog', openDialog)
 </script>
 
@@ -95,10 +100,10 @@ $listen('show-beverage-dialog', openDialog)
 				crossorigin="anonymous"
 				:src="getImageUrl(beverage.image)"
 			>
-				<v-card-title>{{ beverage.name }}</v-card-title>
 			</v-img>
 
 			<v-card-text>
+				<v-card-title class="px-0">{{ beverage.name }}</v-card-title>
 				{{ beverage.description }}
 			</v-card-text>
 
@@ -106,10 +111,17 @@ $listen('show-beverage-dialog', openDialog)
 				<v-spacer></v-spacer>
 
 				<v-btn
-					color="warning"
+					color="black"
 					icon="mdi-pencil"
 					v-if="beverageOwner"
 					@click="editBeverage()"
+				></v-btn>
+
+				<v-btn
+					color="error"
+					icon="mdi-trash-can-outline"
+					v-if="beverageOwner"
+					@click="removeBeverage()"
 				></v-btn>
 
 				<v-btn

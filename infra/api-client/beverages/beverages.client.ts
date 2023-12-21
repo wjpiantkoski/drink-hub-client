@@ -65,4 +65,15 @@ export default class BeveragesClient {
 		})
 	}
 
+	public async removeBeverage(beverageId: string): Promise<void> {
+		const token = this.userStore.token
+
+		await axios(`${this.apiHost}/${beverageId}`, {
+			method: 'delete',
+			headers: {
+				Authorization: `bearer ${token}`
+			}
+		})
+	}
+
 }
