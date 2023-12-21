@@ -1,12 +1,12 @@
 <script lang="ts">
 import globalContent from "~/utils/content/global.content";
 import toolbarContent from "~/utils/content/toolbar.content";
-import logoutService from "~/domain/user/services/logout.service";
 
 export default defineComponent({
 	setup() {
+		const {$event} = useNuxtApp()
 		const logout = async () => {
-			await logoutService()
+			$event('logout')
 		}
 
 		return {
