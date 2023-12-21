@@ -1,5 +1,6 @@
 import {useUserStore} from "~/infra/store/userStore";
 import type {Beverage} from "~/domain/beverage/beverage.entity";
+import axios from "axios";
 
 export default class BeveragesClient {
 
@@ -15,20 +16,37 @@ export default class BeveragesClient {
 	public async getBeveragesByCategory(categoryId: string): Promise<Beverage[]> {
 		const token = this.userStore.token
 
-		return await $fetch(`${this.apiHost}/categories/${categoryId}`, {
+		const response = await axios(`${this.apiHost}/categories/${categoryId}`, {
 			method: 'get',
 			headers: {
 				Authorization: `bearer ${token}`
 			}
 		})
+
+		return response.data
 	}
 
 	public async getBeverage(beverageId: string): Promise<Beverage[]> {
 		const token = this.userStore.token
 
-		return await $fetch(`${this.apiHost}/${beverageId}`, {
+		const response = await axios(`${this.apiHost}/${beverageId}`, {
 			method: 'get',
 			headers: {
+				Authorization: `bearer ${token}`
+			}
+		});
+
+		return response.data
+	}
+
+	public async createBeverage(formData: FormData): Promise<void> {
+		const token = this.userStore.token
+
+		await axios(this.apiHost, {
+			method: 'post',
+			data: formData,
+			headers: {
+				'Content-Type': 'multipart/form-data',
 				Authorization: `bearer ${token}`
 			}
 		})
