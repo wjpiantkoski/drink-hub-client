@@ -1,4 +1,4 @@
-import type {Bookmark} from "~/domain/bookmark/bookmark.entity";
+import type {Bookmark} from "~/domain/bookmark/entities/bookmark.entity";
 import BookmarkClient from "~/infra/api-client/bookmarks/bookmark.client";
 import {useUserStore} from "~/infra/store/userStore";
 

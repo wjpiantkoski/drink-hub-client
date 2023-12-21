@@ -1,5 +1,5 @@
 import {useUserStore} from "~/infra/store/userStore";
-import type {Beverage} from "~/domain/beverage/beverage.entity";
+import type {Beverage} from "~/domain/beverage/entities/beverage.entity";
 import axios from "axios";
 
 export default class BeveragesClient {

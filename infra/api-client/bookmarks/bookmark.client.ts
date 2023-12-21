@@ -1,7 +1,7 @@
 import {useUserStore} from "~/infra/store/userStore";
-import type {Bookmark} from "~/domain/bookmark/bookmark.entity";
+import type {Bookmark} from "~/domain/bookmark/entities/bookmark.entity";
 import axios from "axios";
-import type {BookmarkBody} from "~/domain/beverage/bookmark-body.entity";
+import type {BookmarkBody} from "~/domain/beverage/entities/bookmark-body.entity";
 
 export default class BookmarkClient {
 

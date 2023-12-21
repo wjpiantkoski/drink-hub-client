@@ -1,4 +1,4 @@
-import type {Beverage} from "~/domain/beverage/beverage.entity";
+import type {Beverage} from "~/domain/beverage/entities/beverage.entity";
 
 export type Bookmark = {
 	id: string,

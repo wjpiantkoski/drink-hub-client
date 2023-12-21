@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type {Beverage} from "~/domain/beverage/beverage.entity";
+import type {Beverage} from "~/domain/beverage/entities/beverage.entity";
 
 const {$event} = useNuxtApp()
 
