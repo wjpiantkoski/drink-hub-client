@@ -2,15 +2,25 @@
 import BeveragesClient from "~/infra/api-client/beverages/beverages.client";
 import globalContent from "../../utils/content/global.content";
 import {useUserStore} from "~/infra/store/userStore";
+import bookmarkContent from "~/utils/content/bookmark.content";
+import BookmarkClient from "~/infra/api-client/bookmarks/bookmark.client";
+import {useBookmarkStore} from "~/infra/store/bookmarkStore";
 
 const {$listen, $event} = useNuxtApp()
 const config = useRuntimeConfig()
 const userStore = useUserStore()
+const bookmarkStore = useBookmarkStore()
 
 const showBeverageDialog = ref(false)
 const beverageLoading = ref(false)
 const beverage: any = ref(null)
 const beverageOwner = ref(false)
+const bookmarkLoader = ref(false)
+const isBookmark = ref(false)
+
+const beverageIsBookmark = () => {
+	isBookmark.value = bookmarkStore.beverageIsBookmark(beverage.value?.id)
+}
 
 const getBeverage = async (beverageId: string) => {
 	try {
@@ -21,6 +31,7 @@ const getBeverage = async (beverageId: string) => {
 		beverage.value = await beverageClient.getBeverage(beverageId)
 
 		setBeverageOwner()
+		beverageIsBookmark()
 	} catch {
 		showBeverageDialog.value = false
 
@@ -69,6 +80,43 @@ const editBeverage = () => {
 const removeBeverage = async () => {
 	$event('show-dialog-remove-beverage', beverage.value)
 	closeDialog()
+}
+
+const addBookmark = async () => {
+	try {
+		bookmarkLoader.value = true
+
+		const bookmark = {
+			userId: userStore.user.id,
+			beverageId: beverage.value.id
+		}
+
+		const bookmarkClient = new BookmarkClient()
+		await bookmarkClient.createBookmark(bookmark)
+
+		const bookmarks = await bookmarkClient.getBookmarks(userStore.user.id)
+		bookmarkStore.saveBookmarks(bookmarks)
+
+		beverageIsBookmark()
+
+		$event('show-alert', {
+			type: 'success',
+			text: bookmarkContent.BOOKMARK_ADD_SUCCESS_MESSAGE
+		})
+	} catch {
+		$event('show-alert', {
+			type: 'error',
+			text: bookmarkContent.BOOKMARK_ADD_ERROR_MESSAGE
+		})
+	} finally {
+		bookmarkLoader.value = false
+	}
+}
+
+const removeBookmark = () => {
+	$event('show-dialog-remove-bookmark', {
+		beverageId: beverage.value.id
+	})
 }
 
 $listen('show-beverage-dialog', openDialog)
@@ -125,8 +173,10 @@ $listen('show-beverage-dialog', openDialog)
 				></v-btn>
 
 				<v-btn
-					color="warning"
-					icon="mdi-star-plus"
+					:color="isBookmark ? 'error' :  'warning'"
+					:icon="isBookmark ? 'mdi-star-remove' : 'mdi-star-plus'"
+					:loading="bookmarkLoader"
+					@click="isBookmark ? removeBookmark() : addBookmark()"
 				></v-btn>
 
 				<v-btn

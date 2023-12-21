@@ -1,6 +1,7 @@
 import {useUserStore} from "~/infra/store/userStore";
 import type {Bookmark} from "~/domain/bookmark/bookmark.entity";
 import axios from "axios";
+import type {BookmarkBody} from "~/domain/beverage/bookmark-body.entity";
 
 export default class BookmarkClient {
 
@@ -24,6 +25,18 @@ export default class BookmarkClient {
 		})
 
 		return response.data
+	}
+
+	public async createBookmark(bookmark: BookmarkBody): Promise<void> {
+		const token = this.userStore.token
+
+		await axios(this.apiHost, {
+			data: bookmark,
+			method: 'post',
+			headers: {
+				Authorization: `bearer ${token}`
+			}
+		})
 	}
 
 }

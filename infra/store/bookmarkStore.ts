@@ -13,6 +13,15 @@ export const useBookmarkStore = defineStore('bookmark', {
 	actions: {
 		saveBookmarks(bookmarks: Bookmark[]) {
 			this.bookmarks = bookmarks
+		},
+		beverageIsBookmark(beverageId: string): boolean {
+			if (!beverageId) {
+				return false
+			}
+
+			return this.bookmarks.some(bookmark => {
+				return bookmark.beverage.id === beverageId
+			})
 		}
 	}
 })
