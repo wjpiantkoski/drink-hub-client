@@ -1,4 +1,4 @@
-import type {BookmarkBody} from "~/domain/beverage/entities/bookmark-body.entity";
+import type {BookmarkBody} from "~/domain/bookmark/entities/bookmark-body.entity";
 import logoutService from "~/domain/user/services/logout.service";
 import bookmarkContent from "~/utils/content/bookmark.content";
 import BookmarkClient from "~/infra/api-client/bookmarks/bookmark.client";
