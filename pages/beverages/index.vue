@@ -1,14 +1,12 @@
 <script lang="ts">
 import {useCategoryStore} from "~/infra/store/categoryStore";
-import categoryContent from "~/utils/content/category.content";
-import BeveragesClient from "~/infra/api-client/beverages/beverages.client";
 import BeverageListCard from "~/components/beverage/BeverageListCard.vue";
 import BeverageDialog from "~/components/beverage/BeverageDialog.vue";
-import {useUserStore} from "~/infra/store/userStore";
-import {useBookmarkStore} from "~/infra/store/bookmarkStore";
 import beverageContent from "../../utils/content/beverage.content";
 import BeverageDialogForm from "~/components/beverage/BeverageDialogForm.vue";
 import getCategoriesService from "~/domain/category/services/get-categories.service";
+import getBeveragesService from "~/domain/beverage/services/get-beverages.service";
+import getBookmarksService from "~/domain/bookmark/services/get-bookmarks.service";
 
 export default defineComponent({
 	components: {BeverageDialogForm, BeverageDialog, BeverageListCard},
@@ -19,44 +17,36 @@ export default defineComponent({
 		const selectedCategory = ref('')
 		const beverages: any = ref(null)
 		const beveragesLoading = ref(true)
-		const bookmarkStore = useBookmarkStore()
 
 		const loadData = async () => {
 			$event('show-dialog-loader')
 
 			await getCategoriesService()
 			selectedCategory.value = categoryStore.categories[0]?.id
+
+			await Promise.all([
+				getBeverages(selectedCategory.value),
+				getBookmarksService()
+			])
 		}
 
-		const getBeverages = async () => {
-			try {
-				beveragesLoading.value = true
-				beverages.value = null
-
-				const beverageClient = new BeveragesClient()
-				const beveragesData: any = await beverageClient.getBeveragesByCategory(selectedCategory.value)
-
-				beverages.value = beveragesData
-			} catch (err) {
-				console.error(err)
-			} finally {
-				beveragesLoading.value = false
+		const getBeverages = async (categoryId: string) =>{
+			if (categoryId) {
+				beverages.value = await getBeveragesService(selectedCategory.value)
 			}
-		}
-
-		const getBookmarks = async () => {
-			await bookmarkStore.getBookmarks()
 		}
 
 		const addBeverage = () => {
 			$event('show-dialog-beverage-form')
 		}
 
-		$listen('refresh-beverages-list', async (data: any) => {
+		const refreshBeveragesList = async (data: any) => {
 			if (data.categoryId === selectedCategory.value) {
-				await getBeverages()
+				await getBeverages(selectedCategory.value)
 			}
-		})
+		}
+
+		$listen('refresh-beverages-list', refreshBeveragesList)
 
 		return {
 			loadData,
@@ -65,13 +55,11 @@ export default defineComponent({
 			getBeverages,
 			beverages,
 			beveragesLoading,
-			getBookmarks,
 			addBeverage
 		}
 	},
 	mounted() {
 		this.loadData()
-		this.getBookmarks()
 	},
 	computed: {
 		beverageContent() {
@@ -82,8 +70,8 @@ export default defineComponent({
 		}
 	},
 	watch: {
-		selectedCategory() {
-			this.getBeverages()
+		selectedCategory(newValue) {
+			this.getBeverages(newValue)
 		}
 	}
 })
