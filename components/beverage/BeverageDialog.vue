@@ -1,126 +1,118 @@
-<script setup lang="ts">
-import BeveragesClient from "~/infra/api-client/beverages/beverages.client";
+<script lang="ts">
 import globalContent from "../../utils/content/global.content";
 import {useUserStore} from "~/infra/store/userStore";
 import bookmarkContent from "~/utils/content/bookmark.content";
-import BookmarkClient from "~/infra/api-client/bookmarks/bookmark.client";
 import {useBookmarkStore} from "~/infra/store/bookmarkStore";
+import getImageUrlService from "~/domain/beverage/services/get-image-url.service";
+import createBookmarkService from "~/domain/bookmark/services/create-bookmark.service";
+import getBeverageService from "~/domain/beverage/services/get-beverage.service";
 
-const {$listen, $event} = useNuxtApp()
-const config = useRuntimeConfig()
-const userStore = useUserStore()
-const bookmarkStore = useBookmarkStore()
+export default defineComponent({
+	setup() {
+		const {$listen, $event} = useNuxtApp()
+		const userStore = useUserStore()
+		const bookmarkStore = useBookmarkStore()
 
-const showBeverageDialog = ref(false)
-const beverageLoading = ref(false)
-const beverage: any = ref(null)
-const beverageOwner = ref(false)
-const bookmarkLoader = ref(false)
-const isBookmark = ref(false)
+		const showBeverageDialog = ref(false)
+		const beverageLoading = ref(false)
+		const beverage: any = ref(null)
+		const bookmarkLoader = ref(false)
 
-const beverageIsBookmark = () => {
-	isBookmark.value = bookmarkStore.beverageIsBookmark(beverage.value?.id)
-}
-
-const getBeverage = async (beverageId: string) => {
-	try {
-		beverageLoading.value = true
-
-		const beverageClient = new BeveragesClient()
-
-		beverage.value = await beverageClient.getBeverage(beverageId)
-
-		setBeverageOwner()
-		beverageIsBookmark()
-	} catch {
-		showBeverageDialog.value = false
-
-		$event('show-alert', {
-			type: 'error',
-			text: 'Falha ao buscar detalhes!'
-		})
-	} finally {
-		beverageLoading.value = false
-	}
-}
-
-const setBeverageOwner = () => {
-	beverageOwner.value = beverage.value.userId === userStore.user.id
-}
-
-const closeDialog = () => {
-	showBeverageDialog.value = false
-	beverage.value = null
-}
-
-const openDialog = (data: any) => {
-	getBeverage(data.beverageId)
-	showBeverageDialog.value = true
-}
-
-const getImageUrl = (image: string): string => {
-	if (image) {
-		return `${config.public.API_HOST_ADDRESS}/images/${image}`
-	}
-
-	return ''
-}
-
-const editBeverage = () => {
-	$event('show-dialog-beverage-form', {
-		id: beverage.value.id,
-		name: beverage.value.name,
-		description: beverage.value.description,
-		categoryId: beverage.value.category.id
-	})
-
-	closeDialog()
-}
-
-const removeBeverage = async () => {
-	$event('show-dialog-remove-beverage', beverage.value)
-	closeDialog()
-}
-
-const addBookmark = async () => {
-	try {
-		bookmarkLoader.value = true
-
-		const bookmark = {
-			userId: userStore.user.id,
-			beverageId: beverage.value.id
+		const openDialog = async (data: any) => {
+			showBeverageDialog.value = true
+			await getBeverage(data.beverageId)
 		}
 
-		const bookmarkClient = new BookmarkClient()
-		await bookmarkClient.createBookmark(bookmark)
+		const closeDialog = () => {
+			showBeverageDialog.value = false
+			beverage.value = null
+		}
 
-		const bookmarks = await bookmarkClient.getBookmarks(userStore.user.id)
-		bookmarkStore.saveBookmarks(bookmarks)
+		const getBeverage = async (beverageId: string) => {
+			beverageLoading.value = true
+			beverage.value = await getBeverageService(beverageId)
+			beverageLoading.value = false
+		}
 
-		beverageIsBookmark()
+		const editBeverage = () => {
+			$event('show-dialog-beverage-form', {
+				id: beverage.value.id,
+				name: beverage.value.name,
+				description: beverage.value.description,
+				categoryId: beverage.value.category.id
+			})
 
-		$event('show-alert', {
-			type: 'success',
-			text: bookmarkContent.BOOKMARK_ADD_SUCCESS_MESSAGE
-		})
-	} catch {
-		$event('show-alert', {
-			type: 'error',
-			text: bookmarkContent.BOOKMARK_ADD_ERROR_MESSAGE
-		})
-	} finally {
-		bookmarkLoader.value = false
+			closeDialog()
+		}
+
+		const removeBeverage = async () => {
+			$event('show-dialog-remove-beverage', beverage.value)
+			closeDialog()
+		}
+
+		const addBookmark = async () => {
+			try {
+				bookmarkLoader.value = true
+
+				const bookmark = {
+					userId: userStore.user.id,
+					beverageId: beverage.value.id
+				}
+
+				await createBookmarkService(bookmark)
+
+				$event('show-alert', {
+					type: 'success',
+					text: bookmarkContent.BOOKMARK_ADD_SUCCESS_MESSAGE
+				})
+			} catch {
+				$event('show-alert', {
+					type: 'error',
+					text: bookmarkContent.BOOKMARK_ADD_ERROR_MESSAGE
+				})
+			} finally {
+				bookmarkLoader.value = false
+			}
+		}
+
+		const removeBookmark = () => {
+			$event('show-dialog-remove-bookmark', {
+				beverageId: beverage.value.id
+			})
+			closeDialog()
+		}
+
+		$listen('show-beverage-dialog', openDialog)
+
+		return {
+			beverage,
+			closeDialog,
+			addBookmark,
+			editBeverage,
+			bookmarkStore,
+			globalContent,
+			removeBeverage,
+			removeBookmark,
+			bookmarkLoader,
+			beverageLoading,
+			getImageUrlService,
+			showBeverageDialog,
+			userId: userStore.user?.id,
+		}
+	},
+	computed: {
+		isBookmark() {
+			return this.bookmarkStore.beverageIsBookmark(this.beverage?.id)
+		},
+		beverageOwner() {
+			return this.beverage?.userId === this.userId
+		},
+		imageUrl() {
+			return this.getImageUrlService(this.beverage?.image)
+		}
 	}
-}
+})
 
-const removeBookmark = () => {
-	$event('show-dialog-remove-bookmark', {
-		beverageId: beverage.value.id
-	})
-	closeDialog()
-}
-
-$listen('show-beverage-dialog', openDialog)
 </script>
 
 <template>
@@ -147,7 +139,7 @@ $listen('show-beverage-dialog', openDialog)
 				height="200"
 				class="align-end text-white"
 				crossorigin="anonymous"
-				:src="getImageUrl(beverage.image)"
+				:src="imageUrl"
 			>
 			</v-img>
 
