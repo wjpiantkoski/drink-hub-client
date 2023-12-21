@@ -10,4 +10,5 @@ export default {
 	BEVERAGE_REMOVE_BUTTON_TITLE: 'Remover',
 	BEVERAGE_REMOVE_SUBMIT_SUCCESS_MESSAGE: 'Bebida removida com sucesso',
 	BEVERAGE_REMOVE_SUBMIT_ERROR_MESSAGE: 'Falha ao remover bebida',
+	BEVERAGE_REMOVE_GET_ERROR_MESSAGE: 'Falha ao buscar bebida',
 }
