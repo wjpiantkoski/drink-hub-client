@@ -1,5 +1,5 @@
-import logoutService from "~/domain/user/services/logout.service";
-import BeveragesClient from "~/infra/api-client/beverages/beverages.client";
+import logoutService from "../../../domain/user/services/logout.service";
+import BeveragesClient from "../../../infra/api-client/beverages/beverages.client";
 
 export default async (beverageId: string): Promise<void> => {
 	try {
