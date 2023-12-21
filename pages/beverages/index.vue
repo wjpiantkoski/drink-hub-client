@@ -28,11 +28,14 @@ export default defineComponent({
 				getBeverages(selectedCategory.value),
 				getBookmarksService()
 			])
+
+			$event('close-dialog-loader')
 		}
 
 		const getBeverages = async (categoryId: string) =>{
 			if (categoryId) {
 				beverages.value = await getBeveragesService(selectedCategory.value)
+				beveragesLoading.value = false
 			}
 		}
 
