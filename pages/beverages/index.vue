@@ -1,21 +1,18 @@
 <script lang="ts">
-import CategoryClient from "~/infra/api-client/categories/category.client";
 import {useCategoryStore} from "~/infra/store/categoryStore";
 import categoryContent from "~/utils/content/category.content";
 import BeveragesClient from "~/infra/api-client/beverages/beverages.client";
 import BeverageListCard from "~/components/beverage/BeverageListCard.vue";
 import BeverageDialog from "~/components/beverage/BeverageDialog.vue";
-import BookmarkClient from "~/infra/api-client/bookmarks/bookmark.client";
 import {useUserStore} from "~/infra/store/userStore";
 import {useBookmarkStore} from "~/infra/store/bookmarkStore";
 import beverageContent from "../../utils/content/beverage.content";
 import BeverageDialogForm from "~/components/beverage/BeverageDialogForm.vue";
 
-definePageMeta({middleware: 'auth'})
-
 export default defineComponent({
 	components: {BeverageDialogForm, BeverageDialog, BeverageListCard},
 	setup() {
+		definePageMeta({middleware: 'auth'})
 		const {$event, $listen} = useNuxtApp()
 		const categoryStore = useCategoryStore()
 		const selectedCategory = ref('')
