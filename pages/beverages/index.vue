@@ -16,7 +16,7 @@ definePageMeta({middleware: 'auth'})
 export default defineComponent({
 	components: {BeverageDialogForm, BeverageDialog, BeverageListCard},
 	setup() {
-		const {$event} = useNuxtApp()
+		const {$event, $listen} = useNuxtApp()
 		const categoryStore = useCategoryStore()
 		const selectedCategory = ref('')
 		const beverages: any = ref(null)
@@ -51,6 +51,7 @@ export default defineComponent({
 
 		const getBeverages = async () => {
 			try {
+				beveragesLoading.value = true
 				beverages.value = null
 
 				const beverageClient = new BeveragesClient()
@@ -78,6 +79,12 @@ export default defineComponent({
 		const addBeverage = () => {
 			$event('show-dialog-beverage-form')
 		}
+
+		$listen('refresh-beverages-list', async (data: any) => {
+			if (data.categoryId === selectedCategory.value) {
+				await getBeverages()
+			}
+		})
 
 		return {
 			getCategories,
