@@ -62,14 +62,7 @@ export default defineComponent({
 		}
 
 		const getBookmarks = async () => {
-			try {
-				const bookmarkClient = new BookmarkClient()
-				const bookmarks = await bookmarkClient.getBookmarks(userStore.user.id)
-
-				bookmarkStore.saveBookmarks(bookmarks)
-			} catch (err) {
-				console.error(err)
-			}
+			await bookmarkStore.getBookmarks()
 		}
 
 		const addBeverage = () => {
