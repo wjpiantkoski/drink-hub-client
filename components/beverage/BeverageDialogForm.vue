@@ -7,6 +7,7 @@ import {useUserStore} from "~/infra/store/userStore";
 import BeveragesClient from "~/infra/api-client/beverages/beverages.client";
 import {useCategoryStore} from "~/infra/store/categoryStore";
 import createBeverageService from "~/domain/beverage/services/create-beverage.service";
+import updateBeverageService from "~/domain/beverage/services/update-beverage.service";
 
 const beverageInitialState = {
 	id: '',
@@ -100,7 +101,7 @@ export default defineComponent({
 
 					if (valid) {
 						if (this.beverage.id) {
-
+							await updateBeverageService(this.beverage.id, this.beverage)
 						} else {
 							await createBeverageService(this.beverage)
 						}
