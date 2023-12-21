@@ -32,7 +32,9 @@ export default defineComponent({
 			$event('close-dialog-loader')
 		}
 
-		const getBeverages = async (categoryId: string) =>{
+		const getBeverages = async (categoryId: string) => {
+			beverages.value = null
+
 			if (categoryId) {
 				beverages.value = await getBeveragesService(selectedCategory.value)
 				beveragesLoading.value = false
