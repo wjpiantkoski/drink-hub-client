@@ -1,20 +1,27 @@
-<script lang="ts" setup>
+<script lang="ts">
 import globalContent from "~/utils/content/global.content";
 
-const {$listen} = useNuxtApp()
+export default defineComponent({
+	setup() {
+		const {$listen} = useNuxtApp()
+		const showLoader = ref(false)
 
-const showLoader = ref(false)
+		$listen('show-dialog-loader', () => {
+			showLoader.value = true
+		})
 
-const openDialog = () => {
-	showLoader.value = true
-}
+		$listen('close-dialog-loader', () => {
+			showLoader.value = false
+		})
 
-const closeDialog = () => {
-	showLoader.value = false
-}
+		return {
+			showLoader,
+			globalContent
+		}
+	}
+})
 
-$listen('show-dialog-loader', openDialog)
-$listen('close-dialog-loader', closeDialog)
+
 </script>
 
 <template>
