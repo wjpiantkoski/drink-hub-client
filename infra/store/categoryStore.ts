@@ -1,4 +1,5 @@
 import type {Category} from "~/domain/category/entities/category.entity";
+import CategoryClient from "~/infra/api-client/categories/category.client";
 
 type CategoryState = {
 	categories: Category[]
@@ -10,12 +11,10 @@ export const useCategoryStore = defineStore('category', {
 			categories: []
 		}
 	},
-	getters: {
-		getCategories: state => state.categories
-	},
 	actions: {
-		saveCategories(categories: Category[]) {
-			this.categories = categories
+		async getCategories() {
+			const categoryClient = new CategoryClient()
+			this.categories = await categoryClient.getCategories()
 		}
 	},
 	persist: true
