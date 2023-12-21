@@ -1,36 +1,52 @@
-<script setup lang="ts">
-import {ref, watch} from 'vue'
-const {$listen} = useNuxtApp()
+<script lang="ts">
+import {ref} from 'vue'
 
-const showAlert = ref(false)
-const type = ref('success')
-const icon = ref('$success')
-const title = ref(null)
-const text = ref('')
+export default defineComponent({
+	setup() {
+		const {$listen} = useNuxtApp()
 
-const openAlert = (data: any) => {
-	if (data) {
-		type.value = data.type
-		title.value = data.title
-		icon.value = `$${data.type}`
-		text.value = data.text
-		showAlert.value = true
-	}
-}
+		const showAlert = ref(false)
+		const type = ref('success')
+		const icon = ref('$success')
+		const title = ref(null)
+		const text = ref('')
 
-const closeAlert = () => {
-	showAlert.value = false
-	type.value = 'success'
-	title.value = null
-	icon.value = '$success'
-	text.value = ''
-}
+		const openAlert = (data: any) => {
+			if (data) {
+				type.value = data.type
+				title.value = data.title
+				icon.value = `$${data.type}`
+				text.value = data.text
+				showAlert.value = true
+			}
+		}
 
-$listen('show-alert', openAlert)
+		const closeAlert = () => {
+			showAlert.value = false
+			type.value = 'success'
+			title.value = null
+			icon.value = '$success'
+			text.value = ''
+		}
 
-watch(showAlert, (newValue) => {
-	if (newValue) {
-		setTimeout(closeAlert, 4000)
+		$listen('show-alert', openAlert)
+
+		return {
+			openAlert,
+			closeAlert,
+			showAlert,
+			type,
+			text,
+			title,
+			icon
+		}
+	},
+	watch: {
+		showAlert(newValue) {
+			if (newValue) {
+				setTimeout(this.closeAlert, 4000)
+			}
+		}
 	}
 })
 </script>
