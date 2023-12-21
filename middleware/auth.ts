@@ -6,5 +6,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
 	if (!token) {
 		return navigateTo('/signin')
+	} else if (to.fullPath === '/') {
+		return navigateTo('/beverages')
 	}
 })
