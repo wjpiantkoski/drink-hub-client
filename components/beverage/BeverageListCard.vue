@@ -22,7 +22,10 @@ const showBeverage = () => {
 		@click="showBeverage()"
 	>
 		<v-card-title>
-			{{ beverage.name }}
+			{{ beverage.name }} <br>
+			<v-card-subtitle class="pa-0 ma-0">
+				{{ beverage.category.name }}
+			</v-card-subtitle>
 		</v-card-title>
 	</v-card>
 </template>
