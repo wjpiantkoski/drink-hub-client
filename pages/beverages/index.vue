@@ -8,6 +8,7 @@ import BeverageDialog from "~/components/beverage/BeverageDialog.vue";
 import BookmarkClient from "~/infra/api-client/bookmarks/bookmark.client";
 import {useUserStore} from "~/infra/store/userStore";
 import {useBookmarkStore} from "~/infra/store/bookmarkStore";
+import beverageContent from "../../utils/content/beverage.content";
 
 definePageMeta({middleware: 'auth'})
 
@@ -86,6 +87,9 @@ export default defineComponent({
 		this.getBookmarks()
 	},
 	computed: {
+		beverageContent() {
+			return beverageContent
+		},
 		categories() {
 			return this.categoryStore.categories
 		}
@@ -102,7 +106,7 @@ export default defineComponent({
 	<v-container>
 		<v-row>
 			<v-col class="v-col-12">
-				<h1 class="text-h2">Bebidas</h1>
+				<h1 class="text-h2">{{ beverageContent.BEVERAGES_PAGE_TITLE }}</h1>
 			</v-col>
 		</v-row>
 

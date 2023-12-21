@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import BeveragesClient from "~/infra/api-client/beverages/beverages.client";
+import globalContent from "../../utils/content/global.content";
 
 const {$listen, $event} = useNuxtApp()
 const config = useRuntimeConfig()
@@ -60,7 +61,7 @@ $listen('show-beverage-dialog', (data: any) => {
 					size="50"
 				></v-progress-circular>
 
-				<div class="title mt-1">Aguarde...</div>
+				<div class="title mt-1">{{ globalContent.PAGE_LOADER_LABEL }}</div>
 			</v-card-text>
 		</v-card>
 
